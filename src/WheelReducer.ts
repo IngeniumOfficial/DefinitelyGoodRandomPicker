@@ -2,6 +2,7 @@
 interface PayloadType{
     location?: string,
     addInput?: number,
+    deleteInput?: number,
     inputData?: string
 }
 
@@ -29,6 +30,15 @@ export default function WheelReducer(state: any, payload: PayloadType) {
                 return { ...state, fourth: { title: payload.inputData, value: 1, color: '#214F84' } };
             case 'fifth':
                 return { ...state, fifth: { title: payload.inputData, value: 1, color: '#3CEF1F' } };
+        }
+    } else if('deleteInput' in payload) {
+        const newState = { ...state }
+        switch(payload.deleteInput) {
+            case 3:
+                delete newState.third;
+                return newState;
+            default:
+                return newState;
         }
     }
 }
