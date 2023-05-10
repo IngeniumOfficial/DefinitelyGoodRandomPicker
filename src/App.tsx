@@ -10,10 +10,6 @@ const App = () => {
         <h3 className='headings'>Absolutely not rigged or Anything</h3>
         <h4 className='headings' id='lastHeading'>Works perfectly fine.</h4>
         <Wheel />
-        <h4 className='label'>Each New Line is Separate Input</h4>
-        <textarea>
-          Input Box
-        </textarea>
         <h4 className='label'>Ok, you caught me. Select this box to make it fair.</h4>
         <input type="checkbox" />
     </div>
