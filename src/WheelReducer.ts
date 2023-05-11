@@ -35,7 +35,13 @@ export default function WheelReducer(state: any, payload: PayloadType) {
         const newState = { ...state }
         switch(payload.deleteInput) {
             case 3:
-                delete newState.third;
+                delete newState['third'];
+                return newState;
+            case 4:
+                delete newState['fourth'];
+                return newState;
+            case 5:
+                delete newState['fifth'];
                 return newState;
             default:
                 return newState;
