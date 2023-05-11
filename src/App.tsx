@@ -1,19 +1,27 @@
-import { useState } from 'react'
-import './App.scss'
-import Wheel from './components/Wheel';
+import type { Component } from 'solid-js';
 
-const App = () => {
+import logo from './logo.svg';
+import styles from './App.module.css';
 
+const App: Component = () => {
   return (
-    <div className="App">
-        <h2 className='headings'>Definitely Good Random Item Picker</h2>
-        <h3 className='headings'>Absolutely not rigged or Anything</h3>
-        <h4 className='headings' id='lastHeading'>Works perfectly fine.</h4>
-        <Wheel />
-        <h4 className='label'>Ok, you caught me. Select this box to make it fair.</h4>
-        <input type="checkbox" />
+    <div class={styles.App}>
+      <header class={styles.header}>
+        <img src={logo} class={styles.logo} alt="logo" />
+        <p>
+          Edit <code>src/App.tsx</code> and save to reload.
+        </p>
+        <a
+          class={styles.link}
+          href="https://github.com/solidjs/solid"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn Solid
+        </a>
+      </header>
     </div>
-  )
-}
+  );
+};
 
 export default App;
