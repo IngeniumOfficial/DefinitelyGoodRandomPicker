@@ -1,0 +1,25 @@
+{
+  "name": "definitelygoodrandompicker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IngeniumOfficial/DefinitelyGoodRandomPicker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IngeniumOfficial/DefinitelyGoodRandomPicker/issues"
+  },
+  "homepage": "https://github.com/IngeniumOfficial/DefinitelyGoodRandomPicker#readme",
+  "dependencies": {
+    "apexcharts": "^3.40.0",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.22"
+  }
+}
