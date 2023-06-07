@@ -1,6 +1,6 @@
 const inputData = {
     series: [1, 1],
-    labels: ['random1', 'random2']
+    labels: ['random1', 'random2'],
 }
 
 
@@ -28,7 +28,13 @@ var options = {
         type: 'pie'
     },
     series: inputData.series,
-    labels: inputData.labels
+    labels: inputData.labels,
+    dataLabels: {
+        formatter: (val, { seriesIndex, dataPointIndex, w}) => {
+            return w.config.labels[seriesIndex] // this will display the values of the inputs and not their share in the pie chart
+        }
+    },
+    legend: { show: false }
 }
 
 var chart = new ApexCharts(chartElement, options);
@@ -51,7 +57,8 @@ inputSection.addEventListener("input", (e) => {
         
         
 const addInput = () => {
-    console.log("hi, add input")
+    inputData.series.push(1);
+    chart.updateSeries(inputData.series)
 }
 
 const removeInput = () => {
