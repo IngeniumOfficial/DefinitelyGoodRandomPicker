@@ -16,3 +16,17 @@ body{
     gap: 0.5em;
     margin-bottom: 0.5em;
 }
+
+.inputGroup {
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    margin: 0;
+}
+
+.removeButton {
+    margin: 0;
+}

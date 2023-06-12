@@ -1,3 +1,5 @@
+import { inputID } from "./inputIdentifier.js";
+
 
 // inputData is where the data gets manipulated and updates the wheel
 const inputData = {
@@ -5,8 +7,14 @@ const inputData = {
     labels: ['random1', 'random2'],
 }
 
+//TODO: link the input data to local storage
+let inputSizeCache = 2;
+
 var chartElement = document.querySelector("#chart"); // The wheel itself
 var inputSection = document.querySelector("#inputSection") // The inputSection is the div where the inputs are located
+
+// existing elements for styling
+var body = document.querySelector("body");
 
 // inputOne and inputTwo are created to then be added with Javascript
 var inputOne = document.createElement('div');
@@ -55,37 +63,11 @@ chart.render();
 
 // On change in input, depending on the input that is changed, the chart is updated
 inputSection.addEventListener("input", (e) => {
-    switch(e.target.id){
-        case "innerinput1":
-            inputData.labels[0] = e.target.value
-            chart.updateSeries(inputData.series)
-            break;
-        case "innerinput2":
-            inputData.labels[1] = e.target.value
-            chart.updateSeries(inputData.series)
-            break;
-        case "innerinput3":
-            inputData.labels[2] = e.target.value
-            chart.updateSeries(inputData.series)
-            break;
-        case "innerinput4":
-            inputData.labels[3] = e.target.value
-            chart.updateSeries(inputData.series)
-            break;
-        case 'innerinput5':
-            inputData.labels[4] = e.target.value;
-            chart.updateSeries(inputData.series);
-            break;
-        case 'innerinput6':
-            inputData.labels[5] = e.target.value;
-            chart.updateSeries(inputData.series);
-            break;
-        case 'innerinput7':
-            inputData.labels[6] = e.target.value;
-            chart.updateSeries(inputData.series);
-            break;
-        }
-    })
+    const inputid = inputID(e);
+    inputData.labels[inputid] = e.target.value;
+    chart.updateSeries(inputData.series);
+})
+
         
 // Input addition
 const addInput = () => {
@@ -93,12 +75,21 @@ const addInput = () => {
     let newInput = document.createElement('div');
     let newInnerInput = document.createElement('input');
     let newLabelInput = document.createElement('label');
-    const currentInput = inputData.labels.length + 1;
-    newLabelInput.innerText = 'Input '+currentInput+' ';
+    let newInnerRemove = document.createElement('button');
+    inputSizeCache += 1;
+    let currentInput = inputSizeCache;
+    newLabelInput.innerText = 'Input '+currentInput+': ';
+    newInnerRemove.innerText = "X";
+    newInnerRemove.setAttribute("class", "removeButton")
+    newInnerRemove.style.fontWeight = "bold";
     newInput.setAttribute("id", "input"+currentInput);
+    newInput.setAttribute("class", "inputGroup")
     newInnerInput.setAttribute('id', 'innerinput'+currentInput);
+    newInnerRemove.setAttribute("id", currentInput);
+    newInnerRemove.addEventListener("click", () => removeInput(newInnerRemove.id))
     newInput.appendChild(newLabelInput);
     newInput.appendChild(newInnerInput);
+    newInput.appendChild(newInnerRemove);
     inputSection.appendChild(newInput)
 
     // Add to series array and labels array
@@ -108,9 +99,40 @@ const addInput = () => {
 }
 
 // Input removal
-const removeInput = () => {
-    // remove using map and duplicate and array
+const removeInput = (id) => {
+    // remove element off the dom
+    const inputSelect = "#input"+id
+    document.querySelector(inputSelect).remove();
+
+    console.log(inputData);
+    console.log("series length 1:  ", inputData.series.length)
+    // remove series by just popping one out
+    inputData.series.pop();
+    console.log("inputdata series 2:  ". inputData.series);
+
+    // const tempLabelsArr = inputData.labels.filter((el, index) => {
+    //     if(index !== (parseInt(id, 10)-1)) return el;
+    // })
+    // inputData.series = tempLabelsArr;
+
+    // chart.updateSeries(inputData.series);
 }
 
 
 addInputButton.addEventListener("click", addInput)
+
+
+
+
+
+
+
+
+
+
+// conditional styling
+// TODO: allow user to select between light-theme and dark-theme
+// TODO: store theme preference in local data
+// const setDarkTheme = () => {
+//     body.style.backgroundColor = "#383838";
+// }
