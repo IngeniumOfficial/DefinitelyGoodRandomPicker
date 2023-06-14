@@ -1,14 +1,8 @@
-import { inputID } from "./inputIdentifier.js";
+import ApexCharts from "apexcharts";
 
-
-// inputData is where the data gets manipulated and updates the wheel
-const inputData = {
-    series: [1, 1],
-    labels: ['random1', 'random2'],
-}
-
-//TODO: link the input data to local storage
-let inputSizeCache = 2;
+// chart Size data is stored on sessionStorage because why not
+sessionStorage.setItem("chartSize", "2");
+sessionStorage.setItem("adjustor", "0"); // session storage is to keep track of which index to update on input change
 
 var chartElement = document.querySelector("#chart"); // The wheel itself
 var inputSection = document.querySelector("#inputSection") // The inputSection is the div where the inputs are located
@@ -47,8 +41,8 @@ var options = {
     chart: {
         type: 'pie'
     },
-    series: inputData.series,
-    labels: inputData.labels,
+    series: [1, 1],
+    labels: ['random1', 'random2'],
     dataLabels: {
         formatter: (val, { seriesIndex, dataPointIndex, w}) => {
             return w.config.labels[seriesIndex] // this will display the values of the inputs and not their share in the pie chart
@@ -61,62 +55,94 @@ var options = {
 var chart = new ApexCharts(chartElement, options);
 chart.render();
 
+const inputInterpreter = (e) => {
+    const currentAdjustor = sessionStorage.getItem("adjustor")
+    // let's deal with double digits
+    let num = "";
+    for(let i = 0; i < e.target.id.length; i++) {
+        if(parseInt(e.target.id[i], 10) || e.target.id[i]==="0") { // check with parseInt or if it's zero because parseInt doesn't work on zero
+            num+=e.target.id[i];
+        }
+    }
+    const fullNumber = parseInt(num, 10);
+    console.log(fullNumber);
+    return fullNumber-currentAdjustor-1;
+}
+
 // On change in input, depending on the input that is changed, the chart is updated
 inputSection.addEventListener("input", (e) => {
-    const inputid = inputID(e);
-    inputData.labels[inputid] = e.target.value;
-    chart.updateSeries(inputData.series);
+    const indextoTarget = inputInterpreter(e);
+
+    options.labels[indextoTarget] = e.target.value;
+    chart.updateOptions(options);
 })
 
         
 // Input addition
 const addInput = () => {
-    // Create the input and set its identification
+    // check with session storage
+    let toParse = sessionStorage.getItem("chartSize");
+    let inputSizeCache = parseInt(toParse, 10) + 1;
+    console.log("session storage plus one:  ", inputSizeCache);
+    // reset the session storage as well
+    sessionStorage.setItem("chartSize", inputSizeCache.toString());
+
+    // Create the input and its sub-elements
     let newInput = document.createElement('div');
     let newInnerInput = document.createElement('input');
     let newLabelInput = document.createElement('label');
     let newInnerRemove = document.createElement('button');
-    inputSizeCache += 1;
-    let currentInput = inputSizeCache;
-    newLabelInput.innerText = 'Input '+currentInput+': ';
+
+    // Set the data for the input element and its children elements
+    newLabelInput.innerText = 'Input '+inputSizeCache+': ';
     newInnerRemove.innerText = "X";
     newInnerRemove.setAttribute("class", "removeButton")
     newInnerRemove.style.fontWeight = "bold";
-    newInput.setAttribute("id", "input"+currentInput);
+    newInput.setAttribute("id", "input"+inputSizeCache);
     newInput.setAttribute("class", "inputGroup")
-    newInnerInput.setAttribute('id', 'innerinput'+currentInput);
-    newInnerRemove.setAttribute("id", currentInput);
-    newInnerRemove.addEventListener("click", () => removeInput(newInnerRemove.id))
+    newInnerInput.setAttribute('id', 'innerinput'+inputSizeCache);
+    newInnerRemove.setAttribute("id", inputSizeCache);
+    newInnerRemove.addEventListener("click", () => removeInput(newInnerRemove.id)) // This assigns delete functionality to delete button
+
+    // Finally, append the children to the parent input element
     newInput.appendChild(newLabelInput);
     newInput.appendChild(newInnerInput);
     newInput.appendChild(newInnerRemove);
     inputSection.appendChild(newInput)
 
-    // Add to series array and labels array
-    inputData.series.push(1);
-    inputData.labels.push('random'+currentInput)
-    chart.updateSeries(inputData.series)
+    // Update the options manually and force chart to update the options
+    options.series.push(1);
+    options.labels.push('random'+inputSizeCache)
+    chart.updateOptions(options);
 }
 
 // Input removal
 const removeInput = (id) => {
+    // increase the adjustor to successfully track changes in input
+    let currAdj = parseInt(sessionStorage.getItem("adjustor"), 10);
+    currAdj+=1;
+    sessionStorage.setItem("adjustor", currAdj.toString());
+
     // remove element off the dom
     const inputSelect = "#input"+id
     document.querySelector(inputSelect).remove();
 
-    console.log(inputData);
-    console.log("series length 1:  ", inputData.series.length)
     // remove series by just popping one out
-    inputData.series.pop();
-    console.log("inputdata series 2:  ". inputData.series);
+    const seriesPop = options.series.pop();
+    
 
-    // const tempLabelsArr = inputData.labels.filter((el, index) => {
-    //     if(index !== (parseInt(id, 10)-1)) return el;
-    // })
-    // inputData.series = tempLabelsArr;
+    //TODO: this approach only deletes the data if it has been unmodified, instead base it off of adjustor
+    // filter the label to be deleted
+    const tempLabelsArr = options.labels.filter((el, index) => {
+        if(el !== ("random"+id)) return el;
+    })
 
-    // chart.updateSeries(inputData.series);
+    // set the labels and update the chart through options
+    options.labels = tempLabelsArr;
+    chart.updateOptions(options);
 }
+
+
 
 
 addInputButton.addEventListener("click", addInput)
