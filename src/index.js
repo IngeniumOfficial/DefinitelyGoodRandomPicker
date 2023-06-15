@@ -2,7 +2,7 @@ import ApexCharts from "apexcharts";
 
 // chart Size data is stored on sessionStorage because why not
 sessionStorage.setItem("chartSize", "2");
-sessionStorage.setItem("adjustor", "0"); // session storage is to keep track of which index to update on input change
+sessionStorage.setItem("chartObj", JSON.stringify({ 1: "random1", 2: "random2"}))
 
 var chartElement = document.querySelector("#chart"); // The wheel itself
 var inputSection = document.querySelector("#inputSection") // The inputSection is the div where the inputs are located
@@ -29,6 +29,8 @@ innerInputTwo.setAttribute("id", 'innerinput2');
 inputTwo.appendChild(labelInputTwo);
 inputTwo.appendChild(innerInputTwo);
 
+var spinButton = document.querySelector("#spinButton");
+
 // this button initiates additive dom manipulation and adds data to inputData
 var addInputButton = document.querySelector("#addInputButton")
 
@@ -45,7 +47,16 @@ var options = {
     labels: ['random1', 'random2'],
     dataLabels: {
         formatter: (val, { seriesIndex, dataPointIndex, w}) => {
+            console.log(w);
             return w.config.labels[seriesIndex] // this will display the values of the inputs and not their share in the pie chart
+        }
+    },
+    plotOptions: {
+        pie: {
+            dataLabels: {
+                offset: 0,
+                minAngleToShowLabel: 10
+            }
         }
     },
     legend: { show: false }
@@ -64,16 +75,21 @@ const inputInterpreter = (e) => {
             num+=e.target.id[i];
         }
     }
-    const fullNumber = parseInt(num, 10);
-    console.log(fullNumber);
-    return fullNumber-currentAdjustor-1;
+    return parseInt(num, 10);
 }
 
 // On change in input, depending on the input that is changed, the chart is updated
 inputSection.addEventListener("input", (e) => {
-    const indextoTarget = inputInterpreter(e);
+    // this is a pretty slow approach, but unfortunately, Apex charts only works with arrays
+    const indextoTarget = inputInterpreter(e); // this just returns the number at the end of the id
 
-    options.labels[indextoTarget] = e.target.value;
+    // get the chartObj value on sessionStorage
+    const chartObj = JSON.parse(sessionStorage.getItem("chartObj"));
+    chartObj[indextoTarget] = e.target.value; // update the value in the object
+    options.labels = [...Object.values(chartObj)]; // update the chart labels from the chartObj
+    sessionStorage.setItem("chartObj", JSON.stringify(chartObj)); // update the session Storage's chartObj
+
+    // force the chart to update visually
     chart.updateOptions(options);
 })
 
@@ -81,11 +97,9 @@ inputSection.addEventListener("input", (e) => {
 // Input addition
 const addInput = () => {
     // check with session storage
-    let toParse = sessionStorage.getItem("chartSize");
-    let inputSizeCache = parseInt(toParse, 10) + 1;
-    console.log("session storage plus one:  ", inputSizeCache);
-    // reset the session storage as well
-    sessionStorage.setItem("chartSize", inputSizeCache.toString());
+    let inputSizeCache = parseInt(sessionStorage.getItem("chartSize"), 10) + 1; // immediately update the size since this will be bigger
+    let chartObj = JSON.parse(sessionStorage.getItem("chartObj"));
+    sessionStorage.setItem("chartSize", inputSizeCache.toString()); // update the session storage with new value as well
 
     // Create the input and its sub-elements
     let newInput = document.createElement('div');
@@ -110,46 +124,55 @@ const addInput = () => {
     newInput.appendChild(newInnerRemove);
     inputSection.appendChild(newInput)
 
-    // Update the options manually and force chart to update the options
+    // Update the options and chartObj
+    const newValue = 'random'+inputSizeCache;
     options.series.push(1);
-    options.labels.push('random'+inputSizeCache)
+    options.labels.push(newValue)
+    chartObj[inputSizeCache] = newValue;
+    sessionStorage.setItem("chartObj", JSON.stringify(chartObj));
+
     chart.updateOptions(options);
 }
 
 // Input removal
 const removeInput = (id) => {
-    // increase the adjustor to successfully track changes in input
-    let currAdj = parseInt(sessionStorage.getItem("adjustor"), 10);
-    currAdj+=1;
-    sessionStorage.setItem("adjustor", currAdj.toString());
+    const chartObj = JSON.parse(sessionStorage.getItem("chartObj"));
 
     // remove element off the dom
     const inputSelect = "#input"+id
     document.querySelector(inputSelect).remove();
 
-    // remove series by just popping one out
-    const seriesPop = options.series.pop();
-    
+    const seriesPop = options.series.pop(); // remove series by just popping one out
 
-    //TODO: this approach only deletes the data if it has been unmodified, instead base it off of adjustor
-    // filter the label to be deleted
-    const tempLabelsArr = options.labels.filter((el, index) => {
-        if(el !== ("random"+id)) return el;
-    })
+    delete chartObj[id]; // use the id to locate the key-value pair in chartObj and delete it
 
-    // set the labels and update the chart through options
-    options.labels = tempLabelsArr;
-    chart.updateOptions(options);
+    // now update the options and sessionStorage
+    options.labels = [...Object.values(chartObj)];
+    sessionStorage.setItem("chartObj", JSON.stringify(chartObj));
+
+    chart.updateOptions(options);// update the chart visually
 }
 
-
-
-
+// on click of add input button, add input
 addInputButton.addEventListener("click", addInput)
 
 
 
 
+
+// this makes the wheel spin
+// TODO: optimize wheel spin for more than two input data
+const spinWheel = () => {
+    const spinningAnimation = [
+        { transform: "rotate(0)" },
+        { transform: "rotate(-180deg)" },
+        { transform: "rotate(3420deg)" }
+    ]
+    console.log("Spin the wheel!")
+    chartElement.animate(spinningAnimation, { duration: 3000, iterations: 1, easing: "ease-out", fill: "forwards" })
+}
+
+spinButton.addEventListener("click", spinWheel)
 
 
 
