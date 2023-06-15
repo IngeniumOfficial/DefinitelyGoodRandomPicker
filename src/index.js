@@ -1,4 +1,5 @@
 import ApexCharts from "apexcharts";
+import { targetValue } from "./targetValue.js";
 
 // chart Size data is stored on sessionStorage because why not
 sessionStorage.setItem("chartSize", "2");
@@ -43,11 +44,11 @@ var options = {
     chart: {
         type: 'pie'
     },
+    colors: ["#EC6B56", "#FFC154", "#47B39C", "#EC6B56", "#FFC154", "#47B39C", "#EC6B56", "#FFC154", "#47B39C", "#EC6B56", "#FFC154", "#47B39C", "#EC6B56", "#FFC154", "#47B39C", "#EC6B56", "#FFC154", "#47B39C", "#EC6B56", "#FFC154", "#47B39C"],
     series: [1, 1],
     labels: ['random1', 'random2'],
     dataLabels: {
         formatter: (val, { seriesIndex, dataPointIndex, w}) => {
-            console.log(w);
             return w.config.labels[seriesIndex] // this will display the values of the inputs and not their share in the pie chart
         }
     },
@@ -163,13 +164,30 @@ addInputButton.addEventListener("click", addInput)
 // this makes the wheel spin
 // TODO: optimize wheel spin for more than two input data
 const spinWheel = () => {
-    const spinningAnimation = [
-        { transform: "rotate(0)" },
-        { transform: "rotate(-180deg)" },
-        { transform: "rotate(3420deg)" }
+    // shift labels
+    const shiftLabels = (target) => { // the second is the rigged value, the target is what unrigged will point to 
+        const t = target-1; // find the index of the target
+        const s = 1; // s for second value which will always be at index 1
+
+        const tempLabel = options.labels[s];
+        options.labels[s] = options.labels[t];
+        options.labels[t] = tempLabel;
+    }
+    
+    const windBack = [
+        { transform: "rotate(-180deg)" }
     ]
-    console.log("Spin the wheel!")
-    chartElement.animate(spinningAnimation, { duration: 3000, iterations: 1, easing: "ease-out", fill: "forwards" })
+    // TODO: make the spin look a bit more realistic by giving it leeway and stopping it at a random point within boundaries
+    const spinForward = [
+        { transform: "rotate(3605deg)" }
+    ]
+
+    chartElement.animate(windBack, { duration: 1500, iterations: 1, easing: "ease-in-out" })
+    setTimeout(() => {
+        shiftLabels(targetValue(options.labels));
+        chart.updateOptions(options);
+        chartElement.animate(spinForward, { duration: 4000, iterations: 1, easing: "ease-out", fill: "forwards" })
+    }, 1600)
 }
 
 spinButton.addEventListener("click", spinWheel)
