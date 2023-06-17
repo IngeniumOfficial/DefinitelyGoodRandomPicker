@@ -21,5 +21,11 @@ export const targetValue = (arr) => {
         return 9;
     } else if (wheelSize > 36 && wheelSize <= 40) {
         return 10;
+    } else if (wheelSize > 40 && wheelSize <= 44) {
+        return 11;
+    } else if (wheelSize > 44 && wheelSize <= 48) {
+        return 12;
+    } else if (wheelSize > 48 && wheelSize <= 52) {
+        return 13;
     }
 }

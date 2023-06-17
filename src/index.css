@@ -3,10 +3,16 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #FFE5B4;
 }
 
 #chart{
     width: 400px;
+    z-index: -1;
+}
+
+#ticker{
+    transform: rotate(90deg);
 }
 
 #inputSection{
@@ -31,10 +37,59 @@ body{
     margin: 0;
 }
 
+#section2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
+}
 
-/* @keyframes twoValueSpin {
-    50% {transform: rotate(180deg);}
-    100% {
-        transform: rotate(360deg);
+input{
+    border-radius: 1em;
+    padding: 0.2em;
+}
+
+button{
+    background-color: #92B9E7;
+    color: white;
+    font-weight: bold;
+    border: 1px solid white;
+    padding: 0.3em 0.5em 0.3em 0.5em;
+    border-radius: 1em;
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+#spinButton{
+    padding: 1em;
+}
+#spinButton:hover{ transform: scale(1.3) }
+
+@media screen and (min-width: 2000px) {
+    body{
+        font-size: 23px;
     }
-} */
+    #chart{
+        width: 1000px;
+        position: absolute;
+        left: 300px;
+        top: 250px;
+    }
+    #ticker{
+        width: 80px;
+        position: absolute;
+        left: 1160px;
+        top: 615px;
+    }
+    #section2{
+        position: absolute;
+        right: 550px;
+        top: 400px;
+    }
+    input{ font-size: 23px; }
+    button{ font-size: 23px; }
+}
