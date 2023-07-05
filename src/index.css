@@ -69,6 +69,43 @@ button:hover {
 }
 #spinButton:hover{ transform: scale(1.3) }
 
+#overlay{
+    visibility: hidden;
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.507);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#modal{
+    padding: 3em;
+    border-radius: 2em;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    opacity: 1;
+    background-color: blanchedalmond;
+}
+.winningNotice{
+    color: rgb(53, 53, 121);
+}
+.reloadButtons{
+    background-color: orange;
+    padding: 0.5em;
+    border-radius: 1em;
+    box-shadow: 5px 5px;
+}
+.reloadButtons:hover{
+    background-color: lightblue;
+    cursor: pointer;
+}
+
 @media screen and (min-width: 2000px) {
     body{
         font-size: 23px;

@@ -13,6 +13,14 @@ var chartElement = document.querySelector("#chart"); // The wheel itself
 var inputSection = document.querySelector("#inputSection") // The inputSection is the div where the inputs are located
 var spinButton = document.querySelector("#spinButton"); // spin button
 var ticker = document.querySelector("#ticker"); // ticker svg for the wheel
+var clearData = document.querySelector("#clearAllInputs");
+
+// this function clears all data
+const clearDataFunction = () => {
+    localStorage.clear();
+    location.reload();
+}
+clearData.addEventListener("click", () => clearDataFunction());
 
 // this button initiates additive dom manipulation and adds data to inputData
 var addInputButton = document.querySelector("#addInputButton")
@@ -247,6 +255,63 @@ const spinWheel = () => {
         chart.updateOptions(options);
         chartElement.animate(spinForward, { duration: 4000, iterations: 1, easing: "ease-out", fill: "forwards" })
     }, 1600)
+
+    // this function sets the overlay that allows a reload with same data or new data
+    const handleReload = () => {
+        const overlay = document.querySelector("#overlay");
+        const modal = document.querySelector("#modal");
+        const spinSame = document.querySelector("#spinSame");
+        const spinDiscard = document.querySelector("#spinDiscard");
+        const clearInputs = document.querySelector("#clearAllData");
+        var winnerAnnouncement = document.querySelector("#winnerAnnouncement");
+
+        const discardSecond = () => {
+            const chartObj = JSON.parse(localStorage.getItem("chartObj"))
+            let chartSize = parseInt(localStorage.getItem("chartSize"), 10);
+            chartSize-=1;
+            chartSize.toString(10);
+            let count = 1;
+            for(let key in chartObj){
+                if(count === 2) {
+                    delete chartObj[key];
+                    break;
+                }
+                count += 1;
+            }
+            localStorage.setItem("chartObj", JSON.stringify(chartObj));
+            localStorage.setItem("chartSize", chartSize);
+            location.reload();
+        }
+        const clearData = () => {
+            localStorage.clear();
+            location.reload();
+        }
+
+        // corrects the text to indicate which input won
+        const localChartObj = JSON.parse(localStorage.getItem("chartObj"));
+        let count = 1;
+        let winner = '';
+        for(let key in localChartObj){
+            if(count === 2) {
+                winner = localChartObj[key];
+                break;
+            } else {
+                count+=1;
+            }
+        }
+        winnerAnnouncement.innerText = "The Winner Is..... "+winner+" !"
+
+        // this makes the overlay and modal visible and adds options for what to do next
+        overlay.setAttribute("style", "visibility: visible")
+        spinSame.addEventListener("click", () => location.reload());
+        spinDiscard.addEventListener("click", () => discardSecond());
+        clearInputs.addEventListener("click", () => clearData());
+    }
+    
+    // this setTimeout creates the overlay to allow to reload the page
+    setTimeout(() => {
+        handleReload();
+    }, 6000)
 }
 
 spinButton.addEventListener("click", spinWheel)
@@ -256,9 +321,6 @@ spinButton.addEventListener("click", spinWheel)
 
 
 
-// conditional styling
+
 // TODO: allow user to select between light-theme and dark-theme
 // TODO: store theme preference in local data
-// const setDarkTheme = () => {
-//     body.style.backgroundColor = "#383838";
-// }
