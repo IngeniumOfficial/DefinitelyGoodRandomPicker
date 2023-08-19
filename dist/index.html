@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    
+    <title>Definitely Good Random Picker</title>
+    <script type="module" crossorigin src="/assets/index-e831e369.js"></script>
+    <link rel="stylesheet" href="/assets/index-43013d78.css">
+  </head>
+  <body style="margin: 0">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <h2>Definitely Good Randomizer</h2>
+    <h3>100% not rigged or anything</h3>
+    <h3>Input Anything and Spin the Wheel</h3>
+    <button id="spinButton">GO!</button>
+    <div id="genSection">
+      <div id="chart"></div>
+      <image src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAACpklEQVR4nO2YvW/TUBTFj1rJyEUNjQS0LHgAysDAUAQTDAgUGPgKLaz8Ee1CuiAaCFL5mqjowsQGjNAF0UaIBQFTyGgqhaGIAqWICV10K7/KRFR1HMfOe+8e6UhWIvn5HNs/+xoQJS4HwC0AnwFQQm4AqAT77npVEgzebN5316vBB/t6op9oJp+Iq+P94StBjwKq48kVsKBZAZUO3gI3oYGcoISGrRBsVpFDnBrsIzq/J5ILO/tU8AswQGUOU9qfj1zA1eG8KmAKBugFh3l6ZChyAU8OD6kCnsMALXGYxYIXuYBPBU8V8AWay+Mg253eyOGVd2zpVSXshsYqtgpA00BY5hCTLQBQmaFpAgjnOMSzFgCozNAMCmCI2gNAMgiEXlwAmgLCYlwAmgLCclwAmgLCubgANAWES3EBaAIIvXYBqDsIL/JBn24DgMoM0aAAhqo2utEuAP8DQoaqPQAkzUB4EsAsgDqA1Q5+E+R9fwTwEMAJdIGGAcx3MPBmfgVgX1bhjwFY5gMZzPXQ9bMufZjM0er9gcQ+hzeb981r8Fq8ZlDCVwBHszjzy3wAl0Yc+nGvc6E3Mq85NuKES9ibZgHzvPDlQw79eZBu8LB57VAJL9MEHu3a1kPf76Z/5pv97c5A+HY4nkYBs7zY1Dk38/DK1864qoCZNAqo82LvS7nMgyu/K+VUAbU0CviZ4WNvM6+kUUC1C4Ju5AVoIGL7/uI/DoUwXiQFQK4AklvAFwaQQNCXpwDJY9CX9wCSFyFf3gRJXoUhswDJMASZBgkWiGQahEyDJNOgL9MgyTToWzwN1mr19fC8bVMBbzno6OjYegG8HYTn/4zXAQC/OPD09O01B+F/AzgIS3SFQ7uuu+agAP7NKj0K3fePYaG2AngTmLdFyEB/Aag873vTnF0eAAAAAElFTkSuQmCC" id="ticker"></image>
+      <div id="section2">
+        <div id="inputSection"></div>
+        <button id="addInputButton">Add Input</button>
+        <button id="clearAllInputs">Clear All Data</button>
+      </div>
+    </div>
+    <div id="overlay">
+      <div id="modal">
+        <h2 class="winningNotice" id="winnerAnnouncement">This Selection Won!!!</h2>
+        <h4 class="winningNotice">How would you like to proceed?</h4>
+        <h3 class="reloadButtons" id="spinSame">Spin Again with the Same Inputs</h3>
+        <h3 class="reloadButtons" id="spinDiscard">Discard Current Input</h3>
+        <h3 class="reloadButtons" id="clearAllData">Clear All Inputs</h3>
+      </div>
+    </div>
+    
+  </body>
+</html>
