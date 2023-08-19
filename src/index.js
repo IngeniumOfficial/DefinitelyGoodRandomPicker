@@ -2,10 +2,12 @@ import ApexCharts from "apexcharts";
 import { targetValue } from "./targetValue.js";
 
 // change fontsize of labels depending on the window width
-let labelFontSize = '14px';
-if(window.innerWidth >= 2000) {
-    labelFontSize = '30px';
-}
+let labelFontSize = '20px';
+if(window.innerWidth >= 1600) labelFontSize = '23px';
+if(window.innerWidth <= 700) labelFontSize = '18px';
+if(window.innerWidth <= 500) labelFontSize = '15px';
+if(window.innerWidth <= 450) labelFontSize = '13px';
+if(window.innerWidth <= 370) labelFontSize = '10px';
 
 
 var body = document.querySelector("body"); // body
@@ -114,11 +116,18 @@ var options = {
             dataLabels: {
                 offset: 0,
                 minAngleToShowLabel: 10
-            }
+            },
+            customScale: 1
         }
     },
     legend: { show: false }
 }
+
+// change size of pie chart depending on window width
+// if(window.innerWidth <= 1420 && window.innerWidth > 1200) options.plotOptions.pie.customScale = 0.7;
+if(window.innerWidth <= 370) options.dataLabels.style.colors = ["black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black", "black"];
+
+
 // before we render the chart, check if we can add the values we snatched from localstorage
 if(firstLabels) {
     options.series = firstSeries;
@@ -266,21 +275,34 @@ const spinWheel = () => {
         var winnerAnnouncement = document.querySelector("#winnerAnnouncement");
 
         const discardSecond = () => {
-            const chartObj = JSON.parse(localStorage.getItem("chartObj"))
-            let chartSize = parseInt(localStorage.getItem("chartSize"), 10);
-            chartSize-=1;
-            chartSize.toString(10);
-            let count = 1;
-            for(let key in chartObj){
-                if(count === 2) {
-                    delete chartObj[key];
-                    break;
+            // if the chartObj has 2 entries, create and render a string with an error message below this buttons explaining why it cannot be discarded
+            if(Object.entries(JSON.parse(localStorage.getItem("chartObj"))).length === 2) {
+                const error = document.createElement("p");
+                error.innerText = "You must have at least three inputs to discard";
+                error.style.color = "red";
+                modal.appendChild(error);
+                // for a few seconds, make the error visible
+                error.style.visibility = "visible";
+                setTimeout(() => {
+                    error.style.visibility = "hidden";
+                }, 5000)
+            } else {
+                const chartObj = JSON.parse(localStorage.getItem("chartObj"))
+                let chartSize = parseInt(localStorage.getItem("chartSize"), 10);
+                chartSize-=1;
+                chartSize.toString(10);
+                let count = 1;
+                for(let key in chartObj){
+                    if(count === 2) {
+                        delete chartObj[key];
+                        break;
+                    }
+                    count += 1;
                 }
-                count += 1;
+                localStorage.setItem("chartObj", JSON.stringify(chartObj));
+                localStorage.setItem("chartSize", chartSize);
+                location.reload();
             }
-            localStorage.setItem("chartObj", JSON.stringify(chartObj));
-            localStorage.setItem("chartSize", chartSize);
-            location.reload();
         }
         const clearData = () => {
             localStorage.clear();
